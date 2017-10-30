@@ -5,18 +5,11 @@ export function loginByUsername(username, password) {
     username,
     password
   }
-  return fetch({
-    url: '/login/login',
-    method: 'post',
-    data
-  })
+  return fetch.post('/login/login', data)
 }
 
 export function logout() {
-  return fetch({
-    url: '/login/logout',
-    method: 'post'
-  })
+  return fetch.post('/login/logout')
 }
 
 export function getUserInfo(token) {
@@ -26,4 +19,3 @@ export function getUserInfo(token) {
     params: { token }
   })
 }
-

@@ -2,23 +2,29 @@
   <div class='menu-wrapper'>
     <template v-for="item in routes">
 
-      <router-link v-if="!item.hidden&&item.noDropdown&&item.children.length>0" :to="item.path+'/'+item.children[0].path">
+      <router-link :key="item.path" v-if="!item.hidden&&item.noDropdown&&item.children.length>0" :to="item.path+'/'+item.children[0].path">
         <el-menu-item :index="item.path+'/'+item.children[0].path" class='submenu-title-noDropdown'>
-          <icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg><span>{{item.children[0].name}}</span>
+          <!-- <icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg><span>{{item.children[0].name}}</span> -->
+          <i :class="['iconfont', item.icon]" v-show='item.icon'></i>
+          <span>{{item.children[0].name}}</span>
         </el-menu-item>
       </router-link>
 
-      <el-submenu :index="item.name" v-if="!item.noDropdown&&!item.hidden">
+      <el-submenu :key="item.path" :index="item.name" v-if="!item.noDropdown&&!item.hidden">
         <template slot="title">
-          <icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg><span>{{item.name}}</span>
+          <!-- <icon-svg v-if='item.icon' :icon-class="item.icon"></icon-svg><span>{{item.name}}</span> -->
+          <i :class="['iconfont', item.icon]" v-show='item.icon'></i>
+          <span>{{item.children[0].name}}</span>
         </template>
         <template v-for="child in item.children" v-if='!child.hidden'>
 
-          <sidebar-item class='nest-menu' v-if='child.children&&child.children.length>0' :routes='[child]'> </sidebar-item>
+          <sidebar-item :key="child.id" class='nest-menu' v-if='child.children&&child.children.length>0' :routes='[child]'> </sidebar-item>
 
-          <router-link v-else :to="item.path+'/'+child.path">
+          <router-link  v-else :to="item.path+'/'+child.path">
             <el-menu-item :index="item.path+'/'+child.path">
-              <icon-svg v-if='child.icon' :icon-class="child.icon"></icon-svg><span>{{child.name}}</span>
+              <!-- <icon-svg v-if='child.icon' :icon-class="child.icon"></icon-svg><span>{{child.name}}</span> -->
+              <i :class="['iconfont', child.icon]" v-show='child.icon'></i>
+              <span>{{item.children[0].name}}</span>
             </el-menu-item>
           </router-link>
 

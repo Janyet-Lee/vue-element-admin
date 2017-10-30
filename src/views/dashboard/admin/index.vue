@@ -1,6 +1,6 @@
 <template>
 	<div class="dashboard-editor-container">
-		<github></github>
+		<!-- <github></github> -->
 		<el-row class="btn-group">
 			<el-col :span="4" class='text-center'>
 				<router-link class="pan-btn blue-btn" to="/components/index">Components</router-link>
@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import countTo from 'vue-count-to'
 import panThumb from '@/components/PanThumb'
 import todoList from '@/components/TodoList'
@@ -85,13 +84,6 @@ export default {
         pageviews_count: 1024
       }
     }
-  },
-  computed: {
-    ...mapGetters([
-      'name',
-      'avatar',
-      'roles'
-    ])
   }
 }
 </script>

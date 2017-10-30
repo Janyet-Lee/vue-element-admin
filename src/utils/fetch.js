@@ -1,66 +1,96 @@
+/*
+ * API 封装
+ * 参考资料
+ *   1. http://vue2.mmxiaowu.com/article/589af8cde9be1c5b21ef8e9c
+ */
+
 import axios from 'axios'
-import { Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
+import qs from 'qs'
+import NProgress from 'nprogress'
+import router from '@/router'
+import { Notification } from 'element-ui'
+// import config2 from '../../private-config'
 
-// 创建axios实例
-const service = axios.create({
-  baseURL: process.env.BASE_API, // api的base_url
-  timeout: 5000                  // 请求超时时间
-})
+// API 服务器地址
+// const serverHost = config2.serverHost
 
-// request拦截器
-service.interceptors.request.use(config => {
-  // Do something before request is sent
-  if (store.getters.token) {
-    config.headers['X-Token'] = getToken() // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
-  }
+// 请求时的拦截器
+axios.interceptors.request.use(config => {
+  // 这里可以加一些动作, 比如来个进度条开始动作
+  NProgress.start()
   return config
 }, error => {
-  // Do something with request error
-  console.log(error) // for debug
-  Promise.reject(error)
+  return Promise.reject(error)
 })
 
-// respone拦截器
-service.interceptors.response.use(
-  response => response,
-  /**
-  * 下面的注释为通过response自定义code来标示请求状态，当code返回如下情况为权限有问题，登出并返回到登录页
-  * 如通过xmlhttprequest 状态码标识 逻辑可写在下面error中
-  */
-//  const res = response.data;
-//     if (res.code !== 20000) {
-//       Message({
-//         message: res.message,
-//         type: 'error',
-//         duration: 5 * 1000
-//       });
-//       // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
-//       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-//         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-//           confirmButtonText: '重新登录',
-//           cancelButtonText: '取消',
-//           type: 'warning'
-//         }).then(() => {
-//           store.dispatch('FedLogOut').then(() => {
-//             location.reload();// 为了重新实例化vue-router对象 避免bug
-//           });
-//         })
-//       }
-//       return Promise.reject('error');
-//     } else {
-//       return response.data;
-//     }
-  error => {
-    console.log('err' + error)// for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
-  }
-)
+// 请求完成后的拦截器
+axios.interceptors.response.use(response => response, error => {
+  // 这里我们把错误信息捕捉, 后面就不需要写 catch 了
+  return Promise.resolve(error.response)
+})
 
-export default service
+function checkStatus(response) {
+  NProgress.done()
+  // 如果 http 状态码正常, 则直接返回数据
+  if (response.status === 200 || response.status === 304) {
+    // 这里, 如果不需要除 data 外的其他数据, 可以直接 return response.data, 这样可以让后面的代码精简一些
+    // return {
+    //   code: response.data.status.errCode,
+    //   data: response.data.data
+    // }
+    if (response.data.status.errCode === 200) {
+      return {
+        code: response.data.status.errCode,
+        data: response.data.data
+      }
+    }
+    return {
+      code: response.data.status.errCode,
+      data: response.data.status.message
+    }
+  }
+  // 异常状态下, 把错误信息返回去
+  return {
+    code: response.status,
+    data: response.statusText
+  }
+}
+
+// 处理来自后端的错误
+function checkCode(res) {
+  if (res.code === 503) {
+    localStorage.isLogin = false
+    router.push('/login')
+  } else if (res.code !== 200) {
+    Notification.error({ title: '警告', message: `${res.data} ${res.message}. ` })
+  }
+  return res
+}
+
+export default {
+  post(url, data) {
+    return axios({
+      method: 'post',
+      url: url,
+      data: qs.stringify(data),
+      timeout: 30000,
+      withCredentials: false,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      }
+    }).then(checkStatus).then(checkCode)
+  },
+  get(url, params) {
+    return axios({
+      method: 'get',
+      url: url,
+      params,
+      timeout: 30000,
+      withCredentials: false,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    }).then(checkStatus).then(checkCode)
+  }
+}
