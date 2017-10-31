@@ -3,15 +3,15 @@
     <div class="search-container">
       <el-form :inline="true" label-position="left" label-width="80px">
         <el-form-item label="水表地址">
-          <el-select placeholder="请选择" style="margin-right: 20px"></el-select>
-          <el-select placeholder="请选择" style="margin-right: 20px"></el-select>
+          <el-select v-model="test" placeholder="请选择" style="margin-right: 20px"></el-select>
+          <el-select v-model="test" placeholder="请选择" style="margin-right: 20px"></el-select>
           <el-input style="width: 350px;" placeholder="请输入详细地址"></el-input>
         </el-form-item>
         <el-form-item label="水表类型">
-          <el-select placeholder="请选择水表类型"></el-select>
+          <el-select v-model="test" placeholder="请选择水表类型"></el-select>
         </el-form-item>
         <el-form-item label="用水类型">
-          <el-select placeholder="请选择用水类型"></el-select>
+          <el-select v-model="test" placeholder="请选择用水类型"></el-select>
         </el-form-item>
         <el-form-item label="户主">
           <el-input placeholder="请输入户主名"></el-input>
@@ -57,6 +57,7 @@
 export default {
   data() {
     return {
+      test: '',
       tableData: [
         {
           number: 'ABCD187654567',

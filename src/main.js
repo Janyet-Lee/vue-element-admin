@@ -4,7 +4,7 @@ import 'element-ui/lib/theme-default/index.css'
 import App from './App'
 import router from './router'
 import store from './store'
-import './icons' // icon
+// import './icons' // icon
 import './errorLog'// error log
 import './assets/iconfont/iconfont.css'
 

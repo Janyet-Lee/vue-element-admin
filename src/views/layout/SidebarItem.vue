@@ -24,7 +24,7 @@
             <el-menu-item :index="item.path+'/'+child.path">
               <!-- <icon-svg v-if='child.icon' :icon-class="child.icon"></icon-svg><span>{{child.name}}</span> -->
               <i :class="['iconfont', child.icon]" v-show='child.icon'></i>
-              <span>{{item.children[0].name}}</span>
+              <span>{{child.name}}</span>
             </el-menu-item>
           </router-link>
 

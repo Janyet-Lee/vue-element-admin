@@ -7,7 +7,8 @@
 		<screenfull class='screenfull'></screenfull>
 		<el-dropdown class="avatar-container" trigger="click">
 			<div class="avatar-wrapper">
-				<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+				<!-- <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'"> -->
+				<img class="user-avatar" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1509421806221&di=12a8fd153bcf5e464b2d86c5598d27b2&imgtype=0&src=http%3A%2F%2Fimg.xiazaizhijia.com%2Fuploads%2F2016%2F1107%2F20161107090704703.jpg" alt="">
 				<i class="el-icon-caret-bottom"></i>
 			</div>
 			<el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -16,11 +17,6 @@
 						首页
 					</el-dropdown-item>
 				</router-link>
-				<a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">
-					<el-dropdown-item>
-						项目地址
-					</el-dropdown-item>
-				</a>
 				<el-dropdown-item divided><span @click="logout" style="display:block;">退出登录</span></el-dropdown-item>
 			</el-dropdown-menu>
 		</el-dropdown>
@@ -102,7 +98,9 @@ export default {
 							position: relative;
 							.user-avatar {
 									width: 40px;
-									height: 40px;
+									// height: 40px;
+									margin-top: 5px;
+									height: auto;
 									border-radius: 10px;
 							}
 							.el-icon-caret-bottom {
